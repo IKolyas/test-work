@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AdCreateRequest;
 use App\Http\Resources\Api\AdResource;
 use App\Http\Resources\Api\AdShowResource;
-use Illuminate\Http\Request, Illuminate\Http\JsonResponse;
+use Illuminate\Http\JsonResponse;
 
 class AdController extends Controller
 {
@@ -17,31 +17,43 @@ class AdController extends Controller
     public function index(): JsonResponse
     {
 
-        $ads = AdResource::collection(Ad::paginate(self::PAGINATE));
+        $sort = request()->sort;
 
-        if ($ads->count()) {
+        if (!is_null($sort)) {
+            $sort = json_decode($sort);
+        }
+
+        $orderCreatedAt = $sort && $sort->created_at ? 'ASC' : 'DESC';
+        $orderPrice = $sort && $sort->price ? 'ASC' : 'DESC';
+
+        $ads = Ad::orderByRaw("price $orderPrice, created_at $orderCreatedAt");
+
+        $adsCollection = AdResource::collection($ads->paginate(self::PAGINATE));
+
+        if ($adsCollection->count()) {
             return response()->json([
                 'status' => 'success',
-                'ads' => $ads,
-                'last_page' => $ads->lastPage(),
-                'current_page' => $ads->currentPage(),
+                'ads' => $adsCollection,
+                'last_page' => $adsCollection->lastPage(),
+                'current_page' => $adsCollection->currentPage(),
             ]);
         }
 
         return response()->json(['status' => 'error', 'message' => __('ad.response.error.empty_ad_list')]);
     }
 
-    public function store(AdCreateRequest $request)
+    public function store(AdCreateRequest $request): JsonResponse
     {
 
         $validate = $request->validated();
+        $validate['price'] = floatval($validate['price']);
         $images = $validate['images'];
         unset($validate['images']);
         $ad = Ad::create($validate);
         $ad->adImages()->createMany($images);
 
         if($ad->save()) {
-            return response()->json(['status' => 'success', 'message' => $ad->id]);
+            return response()->json(['status' => 'success', 'ad' => $ad->id]);
         }
 
         return response()->json(['status' => 'error', 'message' => 'Not save data ad!']);
