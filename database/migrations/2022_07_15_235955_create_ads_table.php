@@ -17,7 +17,7 @@ class CreateAdsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title', 200)->nullable(false);
             $table->string('description', 1000)->nullable(true);
-            $table->float('price')->nullable(false);
+            $table->float('price', 10)->nullable(false);
             $table->string('contacts')->nullable(false);
             $table->timestamps();
         });
