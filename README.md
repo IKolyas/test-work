@@ -1,6 +1,6 @@
-# API
+# API ROUTES
 
-## api routes
+## ad list
 ```
 GET http://a0697020.xsph.ru/api/ads
 ```
@@ -21,7 +21,7 @@ return json structure:
     "current_page": 1
 }
 ```
-
+## ad item
 ```
 GET http://a0697020.xsph.ru/api/ads/{adId}?fields[]=created_at&fields[]=description&fields[]=adImages
 ```
@@ -52,7 +52,7 @@ return json structure:
         }
 }
 ```
-
+## ad create
 ```
 POST http://a0697020.xsph.ru/api/ads
 ```
