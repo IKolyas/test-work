@@ -1,1 +1,32 @@
-//
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+
+header {
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+}
+.content {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    min-height: calc(100vh - 56px);
+    padding-top: 56px;
+}
+footer {
+    width: 100%;
+    height: 56px;
+    background-color: #17a2b8;
+}
+.img-fluid {
+    width: 100%;
+    height: 450px !important;
+    object-fit: cover;
+}
